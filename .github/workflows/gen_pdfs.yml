@@ -23,7 +23,7 @@ jobs:
         run: cinst -y office-to-pdf office365homepremium
 
       - name: Build PDF
-        run: OfficeToPdf Ikaros.docx Ikaros.pdf
+        run: fontview Hamletornot-K7y7.ttf ; OfficeToPdf Ikaros.docx Ikaros.pdf
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.0.0
