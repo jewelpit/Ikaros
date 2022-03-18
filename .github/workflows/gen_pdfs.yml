@@ -23,7 +23,7 @@ jobs:
         run: cinst -y office-to-pdf office365homepremium
 
       - name: Build PDF
-        run: fontview Hamletornot-K7y7.ttf ; OfficeToPdf Ikaros.docx Ikaros.pdf /bookmarks /print
+        run: cp Hamletornot-K7y7.ttf ${env:windir}\Fonts; OfficeToPdf Ikaros.docx Ikaros.pdf /bookmarks /print
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.0.0
