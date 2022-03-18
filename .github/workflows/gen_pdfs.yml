@@ -14,20 +14,26 @@ jobs:
   # This workflow contains a single job called "build"
   gen-pdfs:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
 
       # Runs a single command using the runners shell
-      - name: Install dependencies
-        run: sudo apt install pandoc texlive-latex-base texlive-latex-extra
+      - name: Install Office
+        run: winget install Microsoft.Office
+
+      - name: Install docx2pdf
+        run: py -3 pip install docx2pdf
 
       # Runs a set of commands using the runners shell
       - name: Build PDF
-        run: pandoc Ikaros.docx -o Ikaros.pdf
+        run: docx2pdf Ikaros.docx
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.0.0
@@ -35,7 +41,7 @@ jobs:
           # Artifact name
           name: Ikaros.pdf # optional, default is artifact
           # A file, directory or wildcard pattern that describes what to upload
-          path: .
+          path: Ikaros.pdf
           # The desired behavior if no files are found using the provided path.
           if-no-files-found: error
           retention-days: 90
