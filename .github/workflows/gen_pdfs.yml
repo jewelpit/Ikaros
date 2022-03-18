@@ -15,9 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v1
-        with:
-          python-version: '3.7'
 
       - name: Install Chocolatey
         run: Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
@@ -26,7 +23,7 @@ jobs:
         run: cinst -y office-to-pdf office365homepremium
 
       - name: Build PDF
-        run: office-to-pdf Ikaros.docx Ikaros.pdf
+        run: OfficeToPdf Ikaros.docx Ikaros.pdf
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.0.0
