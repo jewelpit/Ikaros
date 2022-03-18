@@ -1,0 +1,34 @@
+name: Generate PDFs
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  gen-pdfs:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install deps
+        run: cinst -y office-to-pdf office365homepremium
+
+      - name: Build PDF
+        run: |
+          cp Hamletornot-K7y7.ttf ${env:windir}\Fonts;
+          reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" /v "HamletOrNot (TrueType)" /t REG_SZ /d Hamletornot-K7y7.ttf /f;
+          OfficeToPdf Ikaros.docx Ikaros.pdf /bookmarks /print;
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: Ikaros.pdf
+          path: Ikaros.pdf
+          if-no-files-found: error
+          retention-days: 90
