@@ -23,7 +23,10 @@ jobs:
         run: cinst -y office-to-pdf office365homepremium
 
       - name: Build PDF
-        run: cp Hamletornot-K7y7.ttf ${env:windir}\Fonts; OfficeToPdf Ikaros.docx Ikaros.pdf /bookmarks /print
+        run: |
+          cp Hamletornot-K7y7.ttf ${env:windir}\Fonts;
+          reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" /v "HamletOrNot (TrueType)" /t REG_SZ /d Hamletornot-K7y7.ttf /f;
+          OfficeToPdf Ikaros.docx Ikaros.pdf /bookmarks /print;
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.0.0
