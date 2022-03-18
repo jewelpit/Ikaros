@@ -23,7 +23,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Install dependencies
-        run: sudo apt install pandoc
+        run: sudo apt install pandoc pdflatex
 
       # Runs a set of commands using the runners shell
       - name: Build PDF
