@@ -28,7 +28,7 @@ jobs:
         run: OfficeToPdf Ikaros.docx Ikaros.pdf /bookmarks /print
 
       - name: Generate character sheet
-        run: OfficeToPdf "Ikaros CS.pptx" "Ikaros CS.pdf" /prints
+        run: OfficeToPdf "Ikaros CS.pptx" "Ikaros CS.pdf" /print
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.0.0
