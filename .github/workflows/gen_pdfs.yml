@@ -23,7 +23,7 @@ jobs:
         run: Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
       - name: Install deps
-        run: install -y office-to-pdf office365homepremium
+        run: cinst -y office-to-pdf office365homepremium
 
       - name: Build PDF
         run: office-to-pdf Ikaros.docx Ikaros.pdf
