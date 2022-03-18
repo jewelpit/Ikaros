@@ -25,15 +25,14 @@ jobs:
           python-version: '3.7'
 
       # Runs a single command using the runners shell
-      - name: Install Office
-        run: winget install Microsoft.Office
-
-      - name: Install docx2pdf
-        run: py -3 pip install docx2pdf
+      - name: Install deps
+        uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: install -y office-to-pdf
 
       # Runs a set of commands using the runners shell
       - name: Build PDF
-        run: docx2pdf Ikaros.docx
+        run: office-to-pdf Ikaros.docx Ikaros.pdf
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.0.0
