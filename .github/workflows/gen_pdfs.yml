@@ -28,7 +28,7 @@ jobs:
       - name: Install deps
         uses: crazy-max/ghaction-chocolatey@v1
         with:
-          args: install -y office-to-pdf
+          args: install -y office-to-pdf office365homepremium
 
       # Runs a set of commands using the runners shell
       - name: Build PDF
