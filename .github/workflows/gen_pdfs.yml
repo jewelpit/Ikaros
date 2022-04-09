@@ -2,9 +2,9 @@ name: Generate PDFs
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, release ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, release ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -12,6 +12,8 @@ on:
 jobs:
   gen-pdfs:
     runs-on: windows-latest
+    env:
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
 
     steps:
       - uses: actions/checkout@v2
@@ -23,12 +25,19 @@ jobs:
         run: |
           cp Hamletornot-K7y7.ttf ${env:windir}\Fonts;
           reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" /v "HamletOrNot (TrueType)" /t REG_SZ /d Hamletornot-K7y7.ttf /f;
-          OfficeToPdf Ikaros.docx Ikaros.pdf /bookmarks /print;
+          OfficeToPdf Ikaros.docx PDFs\Ikaros.pdf /bookmarks /print;
 
-      - name: Upload a Build Artifact
+      - name: Upload to itch.io
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/release' }}
+        run: |
+          Invoke-WebRequest https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default -outfile butler.zip;
+          Expand-Archive .\butler.zip -DestinationPath .;
+          ./butler.exe push PDFs jewelpit/ikaros:release --if-changed;
+
+      - name: Upload a build artifact
         uses: actions/upload-artifact@v3.0.0
         with:
-          name: Ikaros.pdf
-          path: Ikaros.pdf
+          name: Ikaros
+          path: PDFs
           if-no-files-found: error
           retention-days: 90
