@@ -1,13 +1,6 @@
 name: Generate PDFs
 
-on:
-  push:
-    branches: [ main, release ]
-  pull_request:
-    branches: [ main, release ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   gen-pdfs:
@@ -28,11 +21,11 @@ jobs:
           OfficeToPdf Ikaros.docx PDFs\Ikaros.pdf /bookmarks /print;
 
       - name: Upload to itch.io
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/release' }}
+        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
         run: |
           Invoke-WebRequest https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default -outfile butler.zip;
           Expand-Archive .\butler.zip -DestinationPath .;
-          ./butler.exe push PDFs jewelpit/ikaros:release --if-changed;
+          ./butler.exe push PDFs jewelpit/ikaros:release --userversion ${{ github.ref_name }};
 
       - name: Upload a build artifact
         uses: actions/upload-artifact@v3.0.0
@@ -40,4 +33,4 @@ jobs:
           name: Ikaros
           path: PDFs
           if-no-files-found: error
-          retention-days: 90
+          retention-days: 90g
