@@ -21,7 +21,7 @@ jobs:
           cp Hamletornot-K7y7.ttf ${env:windir}\Fonts;
           reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" /v "HamletOrNot (TrueType)" /t REG_SZ /d Hamletornot-K7y7.ttf /f;
           OfficeToPdf Ikaros.docx PDFs\Ikaros.pdf /bookmarks /print;
-          git log --oneline "$(git describe --tags --abbrev=0 'HEAD^')..HEAD" | Out-File changelog.txt -Encoding utf8;
+          git log  --pretty='format:- %s' "$(git describe --tags --abbrev=0 'HEAD^')..HEAD" | Out-File changelog.txt -Encoding utf8;
           Get-Content changelog.txt;
 
       - name: Release
