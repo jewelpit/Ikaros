@@ -14,7 +14,11 @@ jobs:
           fetch-depth: 0
 
       - name: Install deps
-        run: cinst -y office-to-pdf office365homepremium
+        run: |
+          Set-ExecutionPolicy RemoteSigned -Force;
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'));
+          cinst -y office-to-pdf office365homepremium;
 
       - name: Build PDF
         run: |
