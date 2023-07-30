@@ -1,0 +1,44 @@
+name: Upload PDFs
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  upload-pdfs:
+    runs-on: windows-latest
+    env:
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Make changelog
+        run: |
+          git log  --pretty='format:- %s' "$(git describe --tags --abbrev=0 'HEAD^')..HEAD" | Out-File changelog.txt -Encoding utf8;
+          Get-Content changelog.txt;
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+        with:
+          body_path: changelog.txt
+          fail_on_unmatched_files: true
+          files: |
+            PDFs/*.pdf
+
+      - name: Upload to itch.io
+        if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+        run: |
+          Invoke-WebRequest https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default -outfile butler.zip;
+          Expand-Archive .\butler.zip -DestinationPath .;
+          ./butler.exe push PDFs jewelpit/ikaros:release --userversion ${{ github.ref_name }};
+
+      - name: Upload a build artifact
+        if: ${{ github.event_name != 'push' || github.ref_type == 'branch' }}
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: Ikaros
+          path: PDFs
+          if-no-files-found: error
+          retention-days: 90g
