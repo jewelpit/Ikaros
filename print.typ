@@ -1,9 +1,5 @@
-#page(paper: "a5")[]
-
-#set page(
-  paper: "a4",
-  flipped: true,
-  columns: 2,
+#import "template.typ": ikaros_template
+#show: doc => ikaros_template(
+  cover_page: page()[],
+  include "ikaros.typ",
 )
-
-#include "ikaros.typ"
